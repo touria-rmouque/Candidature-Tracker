@@ -1,58 +1,184 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CandidatureTracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Application Laravel 13 de suivi personnalisé de candidatures pour jeunes diplômés.
 
-## About Laravel
+![alt text](docs/screenshots/image.png)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?style=flat&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?style=flat&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat&logo=mysql&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Présentation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**CandidatureTracker** centralise le suivi des candidatures d'emploi en un seul endroit. Fini les notes dispersées, les oublis de relances et les chevauchements d'entretiens, l'outil transforme une gestion mentale stressante en un processus structuré et efficace.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Fonctionnalités
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| US | Fonctionnalité | Statut |
+|---|---|---|
+| US1 | Inscription / Connexion / Déconnexion (Laravel Breeze) | ✅ |
+| US2 | Liste des candidatures actives | ✅ |
+| US3 | Créer une candidature | ✅ |
+| US4 | Voir le détail d'une candidature | ✅ |
+| US5 | Modifier une candidature | ✅ |
+| US6 | Archiver une candidature (Soft Delete) | ✅ |
+| US7 | Page Archives | ✅ |
+| US8 | Restaurer une candidature archivée | ✅ |
+| US9 | Filtres par statut et priorité | ✅ |
+| US10 | Ajouter un entretien | ✅ |
+| US11 | Modifier / Supprimer un entretien | ✅ |
+| Bonus | File Storage — pièces jointes (CV, lettre) | ✅ |
+| Bonus | Tests Pest — unitaires et fonctionnels | ✅ |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## Stack technique
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **Framework** : Laravel 13
+- **Langage** : PHP 8.3
+- **Authentification** : Laravel Breeze
+- **Templates** : Blade
+- **Base de données** : MySQL 
+- **Tests** : Pest
+- **Debug** : Laravel Debugbar
+- **CSS** : Tailwind CSS
+
+---
+
+## Installation
+
+### Prérequis
+
+- PHP 8.2+
+- Composer
+- Node.js 18+ & npm
+- MySQL 8+ ou SQLite
+
+### Étapes
 
 ```bash
-composer require laravel/boost --dev
+# 1. Cloner le repo
+git clone https://github.com/username/candidature-tracker.git
+cd candidature-tracker
 
-php artisan boost:install
+# 2. Installer les dépendances PHP
+composer install
+
+# 3. Installer les dépendances JS
+npm install && npm run build
+
+# 4. Configurer l'environnement
+cp .env.example .env
+php artisan key:generate
+
+# 5. Configurer la base de données dans .env
+# Pour SQLite (développement) :
+DB_CONNECTION=sqlite
+
+# Pour MySQL :
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3307
+DB_DATABASE=candidature_tracker
+DB_USERNAME=root
+DB_PASSWORD=secret
+
+# 6. Exécuter les migrations
+php artisan migrate
+
+# 7. (Optionnel) Remplir avec des données de démonstration
+php artisan db:seed
+
+# 8. Lancer le serveur
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Ouvrez **http://localhost:8000**
 
-## Contributing
+**Compte de démonstration :**
+```
+Email    : demo@candidature-tracker.fr
+Password : password
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Tests
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# Lancer tous les tests
+php artisan test
 
-## Security Vulnerabilities
+# Avec détail
+php artisan test --verbose
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Un seul fichier
+php artisan test tests/Feature/CandidatureTest.php
+```
 
-## License
+Les tests couvrent :
+- Accès non autorisé bloqué par la Policy
+- Création valide et invalide
+- Archivage et restauration
+- Filtres par statut
+- Upload de fichier
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## Structure du projet
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── CandidatureController.php
+│   │   └── EntretienController.php
+│   └── Requests/
+│       ├── StoreCandidatureRequest.php
+│       ├── UpdateCandidatureRequest.php
+│       ├── StoreEntretienRequest.php
+│       └── UpdateEntretienRequest.php
+├── Models/
+│   ├── Candidature.php       # SoftDeletes, relations, accesseurs
+│   └── Entretien.php
+└── Policies/
+    ├── CandidaturePolicy.php
+    └── EntretienPolicy.php
+
+database/
+├── migrations/
+│   ├── create_candidatures_table.php   # softDeletes()
+│   └── create_entretiens_table.php
+├── factories/
+│   ├── CandidatureFactory.php
+│   └── EntretienFactory.php
+└── seeders/
+    └── DatabaseSeeder.php
+
+resources/views/
+├── layouts/app.blade.php
+├── candidatures/
+│   ├── index.blade.php
+│   ├── create.blade.php
+│   ├── show.blade.php
+│   ├── edit.blade.php
+│   └── archives.blade.php
+└── entretiens/
+    ├── create.blade.php
+    └── edit.blade.php
+
+routes/
+└── web.php
+
+tests/
+└── Feature/
+    └── CandidatureTest.php   # 17 tests Pest
+```
+
+---
+
+

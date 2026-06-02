@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('priorite')->default('normale');
             $table->text('notes')->nullable();
             $table->date('date_candidature');
+            $table->double('salair')->nullable();
             $table->string('fichier_path')->nullable();
             $table->string('fichier_nom')->nullable();
             $table->softDeletes(); 

@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateCandidatureRequest;
 use App\Models\Candidature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -15,9 +14,8 @@ class CandidatureController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Candidature::query()
-            ->where('user_id', auth()->id())
-            ->withCount('entretiens') // Évite N+1
+        $query = Candidature::forUser(auth()->id())
+            ->withCount('entretiens')
             ->orderByRaw("FIELD(priorite, 'haute', 'normale', 'basse')")
             ->orderBy('date_candidature', 'desc');
 
@@ -32,10 +30,10 @@ class CandidatureController extends Controller
         $candidatures = $query->paginate(15)->withQueryString();
 
         return view('candidatures.index', [
-            'candidatures' => $candidatures,
-            'statuts'      => Candidature::STATUTS,
-            'priorites'    => Candidature::PRIORITES,
-            'filtreStatut' => $request->statut,
+            'candidatures'   => $candidatures,
+            'statuts'        => Candidature::STATUTS,
+            'priorites'      => Candidature::PRIORITES,
+            'filtreStatut'   => $request->statut,
             'filtrePriorite' => $request->priorite,
         ]);
     }
@@ -43,7 +41,7 @@ class CandidatureController extends Controller
     public function create(): View
     {
         return view('candidatures.create', [
-            'statuts'  => Candidature::STATUTS,
+            'statuts'   => Candidature::STATUTS,
             'priorites' => Candidature::PRIORITES,
         ]);
     }
@@ -67,7 +65,6 @@ class CandidatureController extends Controller
             ->with('success', 'Candidature ajoutée avec succès !');
     }
 
-
     public function show(Candidature $candidature): View
     {
         $this->authorize('view', $candidature);
@@ -75,12 +72,11 @@ class CandidatureController extends Controller
         $candidature->load('entretiens'); 
 
         return view('candidatures.show', [
-            'candidature' => $candidature,
+            'candidature'    => $candidature,
             'typesEntretien' => \App\Models\Entretien::TYPES,
             'resultats'      => \App\Models\Entretien::RESULTATS,
         ]);
     }
-
 
     public function edit(Candidature $candidature): View
     {
@@ -101,7 +97,7 @@ class CandidatureController extends Controller
 
         if ($request->hasFile('fichier')) {
             if ($candidature->fichier_path) {
-                Storage::disk('private')->delete($candidature->fichier_path);
+                Storage::disk('local')->delete($candidature->fichier_path);
             }
 
             $fichier = $request->file('fichier');
@@ -131,7 +127,7 @@ class CandidatureController extends Controller
     public function archives(): View
     {
         $candidatures = Candidature::onlyTrashed()
-            ->where('user_id', auth()->id())
+            ->forUser(auth()->id()) 
             ->withCount('entretiens')
             ->orderBy('deleted_at', 'desc')
             ->paginate(15);
@@ -153,18 +149,33 @@ class CandidatureController extends Controller
             ->with('success', 'Candidature restaurée dans votre liste active.');
     }
 
+    public function forceDelete(int $id): RedirectResponse
+    {
+        $candidature = Candidature::onlyTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $candidature);
 
-    public function downloadFichier(Candidature $candidature)
-{
-    $this->authorize('view', $candidature);
+        if ($candidature->fichier_path && Storage::disk('local')->exists($candidature->fichier_path)) {
+            Storage::disk('local')->delete($candidature->fichier_path);
+        }
 
-    if (!$candidature->fichier_path || !Storage::disk('local')->exists($candidature->fichier_path)) {
-        abort(404, 'Fichier introuvable.');
+        $candidature->forceDelete();
+
+        return redirect()
+            ->route('candidatures.archives')
+            ->with('success', 'La candidature a été supprimée définitivement.');
     }
 
-    return response()->download(
-        Storage::disk('local')->path($candidature->fichier_path),
-        $candidature->fichier_nom
-    );
-}
+    public function downloadFichier(Candidature $candidature)
+    {
+        $this->authorize('view', $candidature);
+
+        if (!$candidature->fichier_path || !Storage::disk('local')->exists($candidature->fichier_path)) {
+            abort(404, 'Fichier introuvable.');
+        }
+
+        return response()->download(
+            Storage::disk('local')->path($candidature->fichier_path),
+            $candidature->fichier_nom
+        );
+    }
 }

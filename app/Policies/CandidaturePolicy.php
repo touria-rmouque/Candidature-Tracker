@@ -31,4 +31,9 @@ class CandidaturePolicy
     {
         return $user->id === $candidature->user_id;
     }
+
+    public function forceDelete(User $user, Candidature $candidature): bool
+    {
+        return $user->id === $candidature->user_id;
+    }
 }

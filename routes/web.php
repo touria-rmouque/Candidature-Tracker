@@ -30,12 +30,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/candidatures/archives', [CandidatureController::class, 'archives'])->name('candidatures.archives');
     Route::patch('/candidatures/{id}/restore', [CandidatureController::class, 'restore'])->name('candidatures.restore');
     Route::delete('/candidatures/{id}/force-delete', [CandidatureController::class, 'forceDelete'])->name('candidatures.force-delete');
-    Route::get('/candidatures/{candidature}', [CandidatureController::class, 'show'])->name('candidatures.show');
-    Route::get('/candidatures/{candidature}/edit', [CandidatureController::class, 'edit'])->name('candidatures.edit');
-    Route::put('/candidatures/{candidature}', [CandidatureController::class, 'update'])->name('candidatures.update');
-    Route::delete('/candidatures/{candidature}', [CandidatureController::class, 'destroy'])->name('candidatures.destroy');
-    Route::get('/candidatures/{candidature}/fichier', [CandidatureController::class, 'downloadFichier'])->name('candidatures.fichier');
+    
+    Route::get('/candidatures/{candidature}', [CandidatureController::class, 'show'])
+        ->name('candidatures.show')
+        ->withTrashed();
+        
+    Route::get('/candidatures/{candidature}/edit', [CandidatureController::class, 'edit'])
+        ->name('candidatures.edit')
+        ->withTrashed();
+        
+    Route::put('/candidatures/{candidature}', [CandidatureController::class, 'update'])
+        ->name('candidatures.update')
+        ->withTrashed();
+        
+    Route::delete('/candidatures/{candidature}', [CandidatureController::class, 'destroy'])
+        ->name('candidatures.destroy')
+        ->withTrashed();
+        
+    Route::get('/candidatures/{candidature}/fichier', [CandidatureController::class, 'downloadFichier'])
+        ->name('candidatures.fichier')
+        ->withTrashed();
 
+    // Entretiens
     Route::get('/candidatures/{candidature}/entretiens/create', [EntretienController::class, 'create'])->name('entretiens.create');
     Route::post('/candidatures/{candidature}/entretiens', [EntretienController::class, 'store'])->name('entretiens.store');
     Route::get('/candidatures/{candidature}/entretiens/{entretien}/edit', [EntretienController::class, 'edit'])->name('entretiens.edit');
